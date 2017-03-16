@@ -45,12 +45,6 @@
 	window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
 	window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 	
-	var db;
-	
-	if (!window.indexedDB) {
-    window.alert("Votre navigateur ne supporte pas une version stable d'IndexedDB. Quelques fonctionnalités ne seront pas disponibles.")
-	}
-	
 
 	
 const films = [];
@@ -64,26 +58,36 @@ document.addEventListener("DOMContentLoaded", function(){
     if("indexedDB" in window) {
         idbSupported = true;
     }
+    else{
+    	    window.alert("Votre navigateur ne supporte pas une version stable d'IndexedDB. Quelques fonctionnalités ne seront pas disponibles.");
+    }
  
     if(idbSupported) {
-        var openRequest = indexedDB.open("BaseFilms",1);
+        var openRequest = indexedDB.open("BaseFilms",3);
  
         openRequest.onupgradeneeded = function(e) {
 			console.log("running onupgradeneeded");
-			var thisDB = e.target.result;
-		 
-			if(!thisDB.objectStoreNames.contains("Films")) {
-				thisDB.createObjectStore("Films");
+			db = e.target.result;
+
+			var table = db.createObjectStore("Films",{autoIncrement: true});
+			
+			//table.createIndex("nom", "nom", {unique: false});
+			//table.createIndex("arrondissement", "arrondissement", {unique: false});
+
+			table.transaction.oncomplete = function(e){
+				var tableFilm = db.transaction("Films", "readwrite").objectStore("Films");
+				ajoutFilm(tableFilm);
 			}
+
 		}
  
         openRequest.onsuccess = function(e) {
-            console.log("Success!");
+            console.log("Succès");
             db = e.target.result;
         }
  
         openRequest.onerror = function(e) {
-            console.log("Error");
+            console.log("Erreur");
             console.dir(e);
         }
  
@@ -91,15 +95,15 @@ document.addEventListener("DOMContentLoaded", function(){
  
 },false);
 
-function ajoutFilm(f){
-	console.log("appel de la fonction ajoutFilm avec le paramètre " + f);
+function ajoutFilm(tf){
+	console.log("appel de la fonction ajoutFilm");
 	var e = {
-		id : 0,
-		nom : f
+		nom : "Nom d'un film",
+		addresse : "Une addresse"
+	};
+	for(var i=0; i<10; i++){
+	tf.add(e);
 	}
-	var transaction = db.transaction(["Films"],"readwrite");
-    var store = transaction.objectStore("Films");
-	var request = store.add(e,1);
 }
 	
 
