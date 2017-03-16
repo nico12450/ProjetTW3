@@ -10,6 +10,10 @@
       }
     </style>
     <script src="https://openlayers.org/en/v4.0.1/build/ol.js" type="text/javascript"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
     <title>OpenLayers example</title>
   </head>
   <body>
@@ -75,8 +79,33 @@ document.addEventListener("DOMContentLoaded", function(){
 			//table.createIndex("arrondissement", "arrondissement", {unique: false});
 
 			table.transaction.oncomplete = function(e){
+
 				var tableFilm = db.transaction("Films", "readwrite").objectStore("Films");
-				ajoutFilm(tableFilm);
+        var tableau;
+
+        $.ajax({
+
+         url : 'https://raw.githubusercontent.com/nico12450/ProjetTW3/master/tournagesdefilmsparis2011.json',
+         type : 'GET',
+         dataType : 'JSON',
+
+         success : function(data, statut){
+
+            tableau = $.parseJSON(JSON.stringify(data));
+
+         },
+
+         error : function(resultat, statut, erreur){
+            console.log(erreur);
+         },
+
+         complete : function(resultat, statut){
+            console.log("tableau de données créé");
+            ajoutFilm(tableFilm,tableau);
+         }
+
+        });
+
 			}
 
 		}
@@ -95,20 +124,14 @@ document.addEventListener("DOMContentLoaded", function(){
  
 },false);
 
-function ajoutFilm(tf){
-	console.log("appel de la fonction ajoutFilm");
-	var e = {
-		nom : "Nom d'un film",
-		addresse : "Une addresse"
-	};
-	for(var i=0; i<10; i++){
-	tf.add(e);
-	}
+function ajoutFilm(tf,tab){
+  for (var i = 0; i<tab.length; i++) {
+      tf.add(tab[i].fields);
+  };
 }
+
 	
 
     </script>
-	<input id='nom' type='text'>
-	<button onclick="ajoutFilm('nomDuFilm');">Ajout</button>
   </body>
 </html>
