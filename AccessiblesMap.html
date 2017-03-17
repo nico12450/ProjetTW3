@@ -58,6 +58,36 @@ var idbSupported = false;
 var db;
  
 document.addEventListener("DOMContentLoaded", function(){
+
+	var tableau;
+
+	$.ajax({
+
+		 url : 'https://raw.githubusercontent.com/nico12450/ProjetTW3/master/tournagesdefilmsparis2011.json',
+		 type : 'GET',
+		 dataType : 'JSON',
+
+		 success : function(data, statut){
+
+		    tableau = $.parseJSON(JSON.stringify(data));
+		    creationBase(tableau);
+
+
+		 },
+
+		 error : function(resultat, statut, erreur){
+		    console.log(erreur);
+		 },
+
+		 complete : function(resultat, statut){
+		    console.log("tableau de données créé");
+		 }
+
+	});
+
+var creationBase = function(tableau){
+
+    indexedDB.deleteDatabase("BaseFilms");
  
     if("indexedDB" in window) {
         idbSupported = true;
@@ -67,46 +97,28 @@ document.addEventListener("DOMContentLoaded", function(){
     }
  
     if(idbSupported) {
+	
+
         var openRequest = indexedDB.open("BaseFilms",3);
  
         openRequest.onupgradeneeded = function(e) {
-			console.log("running onupgradeneeded");
-			db = e.target.result;
+		console.log("running onupgradeneeded");
+		db = e.target.result;
 
-			var table = db.createObjectStore("Films",{autoIncrement: true});
-			
-			//table.createIndex("nom", "nom", {unique: false});
-			//table.createIndex("arrondissement", "arrondissement", {unique: false});
+		var table = db.createObjectStore("Films",{autoIncrement: true});
+		
+		//table.createIndex("nom", "nom", {unique: false});
+		//table.createIndex("arrondissement", "arrondissement", {unique: false});
 
-			table.transaction.oncomplete = function(e){
 
-				var tableFilm = db.transaction("Films", "readwrite").objectStore("Films");
-        var tableau;
+		table.transaction.oncomplete = function(e){
 
-        $.ajax({
+			var tableFilm = db.transaction(["Films"], "readwrite").objectStore("Films");
+	        	ajoutFilm(tableFilm, tableau);
 
-         url : 'https://raw.githubusercontent.com/nico12450/ProjetTW3/master/tournagesdefilmsparis2011.json',
-         type : 'GET',
-         dataType : 'JSON',
+		}
 
-         success : function(data, statut){
-
-            tableau = $.parseJSON(JSON.stringify(data));
-
-         },
-
-         error : function(resultat, statut, erreur){
-            console.log(erreur);
-         },
-
-         complete : function(resultat, statut){
-            console.log("tableau de données créé");
-            ajoutFilm(tableFilm,tableau);
-         }
-
-        });
-
-			}
+		
 
 		}
  
@@ -121,11 +133,16 @@ document.addEventListener("DOMContentLoaded", function(){
         }
  
     }
+
+}
  
 },false);
 
+
+
 function ajoutFilm(tf,tab){
   for (var i = 0; i<tab.length; i++) {
+      //console.log(tab[i].fields);
       tf.add(tab[i].fields);
   };
 }
