@@ -125,6 +125,7 @@ var creationBase = function(tableau){
         openRequest.onsuccess = function(e) {
             console.log("Succès");
             db = e.target.result;
+			parcourTable();
         }
  
         openRequest.onerror = function(e) {
@@ -145,6 +146,63 @@ function ajoutFilm(tf,tab){
       //console.log(tab[i].fields);
       tf.add(tab[i].fields);
   };
+
+}
+
+var parcourTable = function(tableau){
+ 
+    if("indexedDB" in window) {
+        idbSupported = true;
+    }
+    else{
+    	    window.alert("Votre navigateur ne supporte pas une version stable d'IndexedDB. Quelques fonctionnalités ne seront pas disponibles.");
+    }
+	
+	//var request;
+ 
+    if(idbSupported) {
+	
+
+        var openRequest = indexedDB.open("BaseFilms",3);
+ 
+        openRequest.onupgradeneeded = function(e) {
+		console.log("running onupgradeneeded");
+		db = e.target.result;
+	
+
+		}
+ 
+        openRequest.onsuccess = function(e) {
+		/*
+            console.log("Succès");
+            db = e.target.result;
+			db.transaction("Films").objectStore("Films").get(1).onsuccess = function(event) {
+				console.log(event.target.result.adresse);
+		};
+		*/
+		var objectStore = db.transaction("Films").objectStore("Films");
+
+		objectStore.openCursor().onsuccess = function(event) {
+		var objet = event.target.result;
+		if (objet) {
+			if(objet.value.geo_coordinates){
+				console.log("Position du film " + objet.value.titre + " : " +  "latitude : " + objet.value.geo_coordinates[0] + " longitude : " + objet.value.geo_coordinates[1]);
+			}
+			objet.continue();
+		}
+		else {
+			alert("No more entries!");
+		}
+		};
+        }
+ 
+        openRequest.onerror = function(e) {
+            console.log("Erreur");
+            console.dir(e);
+        }
+ 
+    }
+
 }
 
 	
@@ -152,3 +210,4 @@ function ajoutFilm(tf,tab){
     </script>
   </body>
 </html>
+
