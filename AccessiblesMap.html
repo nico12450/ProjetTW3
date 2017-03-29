@@ -173,14 +173,14 @@ var parcourTable = function(tableau){
 		if (objet) {
 			if(objet.value.geo_coordinates){
 				//console.log("Position du film " + objet.value.titre + " : " +  "latitude : " + objet.value.geo_coordinates[0] + " longitude : " + objet.value.geo_coordinates[1]);
-			var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1]};
+			var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1], titre: objet.value.titre };
 			listePositions.push(pos)
 	
 			}
 			objet.continue();
 		}
 		else {
-			alert("No more entries!");
+			//alert("No more entries!");
 			initMap();
 		}
 		};
@@ -197,24 +197,24 @@ var parcourTable = function(tableau){
 
 
 function initMap() {
-        var albi = {lat: 43.919450, lng: 2.138545};
+        var Paris = {lat: 48.861576, lng: 2.334884};
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          center: albi
+          center: Paris,
+          zoom: 14
         });
-		/*for(i=0; i<3500; i++){
-			var albi = {lat: 43.919450+i/350, lng: 2.138545};
+	if(listePositions!=[]){
+		for (p in listePositions){
 			new google.maps.Marker({
-			  position: albi,
-			  map: map
-			});
-	}*/
+				  position: listePositions[p],
+				  map: map,
+				  title: listePositions[p].titre	
+				});
+		}
 
-	for (p in listePositions){
-		new google.maps.Marker({
-			  position: listePositions[p],
-			  map: map
-			});
+
+
+
+
 	}
 }	
 
