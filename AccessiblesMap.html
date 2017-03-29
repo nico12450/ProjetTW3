@@ -9,6 +9,13 @@
         width: 100%;
       }
     </style>
+    <style>
+       #map {
+        height: 700px;
+        width: 100%;
+
+       }
+    </style>
     <script src="https://openlayers.org/en/v4.0.1/build/ol.js" type="text/javascript"></script>
     <script
   src="https://code.jquery.com/jquery-3.1.1.min.js"
@@ -17,37 +24,13 @@
     <title>OpenLayers example</title>
   </head>
   <body>
+	<div id="map"></div>
 	
     <script type="text/javascript">
-	/*
-      var map = new ol.Map({
-        target: 'map',
-        layers: [
-          new ol.layer.Tile({
-            source: new ol.source.OSM()
-          })
-        ],
-        view: new ol.View({
-          center: ol.proj.fromLonLat([2.353579,48.861443]),
-          zoom: 20
-        })
-      });
-	  */
-	  /*
-	var db;
-	if(window.openDatabase){
-		db = openDatabase('ma_base', '1.0', 'database', 2000000, function(db){
-			db.changeVersion('', '1.0', function (t) {
-				t.executeSql('CREATE TABLE films (id, nom, geolocalisation)');
-			}, error);
-		});
-		alert(db.version);
-	}
-	*/
 	
-	window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-	window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-	window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 	
 
 	
@@ -56,6 +39,8 @@ const dbName = "MaBase";
 	
 var idbSupported = false;
 var db;
+
+var listePositions = [];
  
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -180,18 +165,23 @@ var parcourTable = function(tableau){
 				console.log(event.target.result.adresse);
 		};
 		*/
+
 		var objectStore = db.transaction("Films").objectStore("Films");
 
 		objectStore.openCursor().onsuccess = function(event) {
 		var objet = event.target.result;
 		if (objet) {
 			if(objet.value.geo_coordinates){
-				console.log("Position du film " + objet.value.titre + " : " +  "latitude : " + objet.value.geo_coordinates[0] + " longitude : " + objet.value.geo_coordinates[1]);
+				//console.log("Position du film " + objet.value.titre + " : " +  "latitude : " + objet.value.geo_coordinates[0] + " longitude : " + objet.value.geo_coordinates[1]);
+			var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1]};
+			listePositions.push(pos)
+	
 			}
 			objet.continue();
 		}
 		else {
 			alert("No more entries!");
+			initMap();
 		}
 		};
         }
@@ -205,8 +195,32 @@ var parcourTable = function(tableau){
 
 }
 
-	
 
+function initMap() {
+        var albi = {lat: 43.919450, lng: 2.138545};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: albi
+        });
+		/*for(i=0; i<3500; i++){
+			var albi = {lat: 43.919450+i/350, lng: 2.138545};
+			new google.maps.Marker({
+			  position: albi,
+			  map: map
+			});
+	}*/
+
+	for (p in listePositions){
+		new google.maps.Marker({
+			  position: listePositions[p],
+			  map: map
+			});
+	}
+}	
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIvM1Zs36PSS3sRepcj2jCELURlxGgWT4&callback=initMap">
     </script>
   </body>
 </html>
