@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
 	<meta style = "utf-8">
-    <link rel="stylesheet" href="https://openlayers.org/en/v4.0.1/css/ol.css" type="text/css">
     <style>
       .map {
         height: 100%;
@@ -16,147 +15,102 @@
 
        }
     </style>
-    <script src="https://openlayers.org/en/v4.0.1/build/ol.js" type="text/javascript"></script>
     <script
   src="https://code.jquery.com/jquery-3.1.1.min.js"
   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
   crossorigin="anonymous"></script>
-    <title>OpenLayers example</title>
+    <title>Google map api</title>
   </head>
   <body>
-	<div id="map"></div>
-	
+    <div id="map"></div>
     <script type="text/javascript">
 	
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
 window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 	
-
-	
 const films = [];
-const dbName = "MaBase";
-	
+const dbName = "MaBase";	
 var idbSupported = false;
 var db;
-
 var listePositions = [];
  
 document.addEventListener("DOMContentLoaded", function(){
-
 	var tableau;
-
 	$.ajax({
-
 		 url : 'https://raw.githubusercontent.com/nico12450/ProjetTW3/master/tournagesdefilmsparis2011.json',
 		 type : 'GET',
 		 dataType : 'JSON',
-
 		 success : function(data, statut){
-
 		    tableau = $.parseJSON(JSON.stringify(data));
 		    creationBase(tableau);
-
-
 		 },
-
 		 error : function(resultat, statut, erreur){
 		    console.log(erreur);
 		 },
-
 		 complete : function(resultat, statut){
 		    console.log("tableau de données créé");
 		 }
-
 	});
 
-var creationBase = function(tableau){
 
-    indexedDB.deleteDatabase("BaseFilms");
- 
-    if("indexedDB" in window) {
-        idbSupported = true;
-    }
-    else{
+	var creationBase = function(tableau){
+   	 	indexedDB.deleteDatabase("BaseFilms");
+    	if("indexedDB" in window) {
+     	   idbSupported = true;
+   		 }
+    	else{
     	    window.alert("Votre navigateur ne supporte pas une version stable d'IndexedDB. Quelques fonctionnalités ne seront pas disponibles.");
-    }
+    	}
+			if(idbSupported) {
+					var openRequest = indexedDB.open("BaseFilms",3);
  
-    if(idbSupported) {
-	
-
-        var openRequest = indexedDB.open("BaseFilms",3);
- 
-        openRequest.onupgradeneeded = function(e) {
-		console.log("running onupgradeneeded");
-		db = e.target.result;
-
-		var table = db.createObjectStore("Films",{autoIncrement: true});
-		
+      		openRequest.onupgradeneeded = function(e) {
+							console.log("running onupgradeneeded");
+							db = e.target.result;
+							var table = db.createObjectStore("Films",{autoIncrement: true});
 		//table.createIndex("nom", "nom", {unique: false});
 		//table.createIndex("arrondissement", "arrondissement", {unique: false});
-
-
-		table.transaction.oncomplete = function(e){
-
-			var tableFilm = db.transaction(["Films"], "readwrite").objectStore("Films");
-	        	ajoutFilm(tableFilm, tableau);
-
-		}
-
-		
-
-		}
- 
-        openRequest.onsuccess = function(e) {
-            console.log("Succès");
-            db = e.target.result;
-			parcourTable();
-        }
- 
-        openRequest.onerror = function(e) {
-            console.log("Erreur");
-            console.dir(e);
-        }
- 
-    }
-
-}
- 
-},false);
-
-
+							table.transaction.oncomplete = function(e){
+									var tableFilm = db.transaction(["Films"], "readwrite").objectStore("Films");
+	        				ajoutFilm(tableFilm, tableau);
+							}
+					}
+     					openRequest.onsuccess = function(e) {
+      				console.log("Succès");
+        			db = e.target.result;
+							parcourTable();
+      				}
+      				openRequest.onerror = function(e) {
+       				console.log("Erreur");
+        			console.dir(e);
+      				}
+    	}
+	}//fin creation base
+},false);//
 
 function ajoutFilm(tf,tab){
-  for (var i = 0; i<tab.length; i++) {
-      //console.log(tab[i].fields);
-      tf.add(tab[i].fields);
-  };
-
+  	for (var i = 0; i<tab.length; i++) {
+    	  //console.log(tab[i].fields);
+    		tf.add(tab[i].fields);
+  	};
 }
 
+
 var parcourTable = function(tableau){
- 
-    if("indexedDB" in window) {
+		if("indexedDB" in window) {
         idbSupported = true;
     }
     else{
     	    window.alert("Votre navigateur ne supporte pas une version stable d'IndexedDB. Quelques fonctionnalités ne seront pas disponibles.");
     }
-	
 	//var request;
- 
     if(idbSupported) {
-	
-
-        var openRequest = indexedDB.open("BaseFilms",3);
- 
+    		var openRequest = indexedDB.open("BaseFilms",3);
         openRequest.onupgradeneeded = function(e) {
-		console.log("running onupgradeneeded");
-		db = e.target.result;
-	
-
-		}
- 
+						console.log("running onupgradeneeded");
+						db = e.target.result;
+				}
         openRequest.onsuccess = function(e) {
 		/*
             console.log("Succès");
@@ -165,63 +119,53 @@ var parcourTable = function(tableau){
 				console.log(event.target.result.adresse);
 		};
 		*/
-
-		var objectStore = db.transaction("Films").objectStore("Films");
-
-		objectStore.openCursor().onsuccess = function(event) {
-		var objet = event.target.result;
-		if (objet) {
-			if(objet.value.geo_coordinates){
-				//console.log("Position du film " + objet.value.titre + " : " +  "latitude : " + objet.value.geo_coordinates[0] + " longitude : " + objet.value.geo_coordinates[1]);
-			var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1], titre: objet.value.titre };
-			listePositions.push(pos)
-	
-			}
-			objet.continue();
-		}
-		else {
-			//alert("No more entries!");
-			initMap();
-		}
-		};
+						var objectStore = db.transaction("Films").objectStore("Films");
+						objectStore.openCursor().onsuccess = function(event) {
+								var objet = event.target.result;
+								if (objet) {
+										if(objet.value.geo_coordinates){
+												//console.log("Position du film " + objet.value.titre + " : " +  "latitude : " + objet.value.geo_coordinates[0] + " longitude : " + objet.value.geo_coordinates[1]);
+												var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1], titre: objet.value.titre };
+												listePositions.push(pos)
+										}
+										objet.continue();
+								}			
+								else {		
+								initMap();
+								}
+						};
         }
- 
         openRequest.onerror = function(e) {
             console.log("Erreur");
             console.dir(e);
         }
- 
     }
-
-}
-
+}//fin parcoursTable
 
 function initMap() {
-        var Paris = {lat: 48.861576, lng: 2.334884};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: Paris,
-          zoom: 14
+		var map = new google.maps.Map(document.getElementById('map'), {
+    		zoom: 3,
+        center: {lat: -28.024, lng: 140.887}
+    });
+		var markers = listePositions.map(function(location, i) {
+    		return new google.maps.Marker({
+            position: location,
+
+						title: listePositions[i].titre
         });
-	if(listePositions!=[]){
-		for (p in listePositions){
-			new google.maps.Marker({
-				  position: listePositions[p],
-				  map: map,
-				  title: listePositions[p].titre	
-				});
-		}
+    });
+        // ajoute un marker clusterer pour regrouper les markers.
+    var markerCluster = new MarkerClusterer(map, markers,
+    		{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 
 
-
-
-
-	}
-}	
-
+}//fin initMap
+	
+    </script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIvM1Zs36PSS3sRepcj2jCELURlxGgWT4&callback=initMap">
     </script>
   </body>
 </html>
-
