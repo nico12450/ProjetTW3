@@ -23,17 +23,17 @@
   </head>
   <body>
 	<FORM NAME="Choix">
-<SELECT NAME="Liste" onChange="Lien()">
-<OPTION VALUE="">Choisir une annee
-<OPTION VALUE="">2002
-<OPTION VALUE="">2003
-<OPTION VALUE="">2004
-<OPTION VALUE="">2005
-<OPTION VALUE="">2006
-<OPTION VALUE="">2007
-<OPTION VALUE="">2008
-<OPTION VALUE="">2009
-<OPTION VALUE="">2010
+<SELECT NAME="Liste">
+<OPTION VALUE="" onClick = "initMap()">Choisir une annee
+<OPTION VALUE="" onClick = "annee('2002')">2002
+<OPTION VALUE="" onClick = "annee('2003')">2003
+<OPTION VALUE="" onClick = "annee('2004')">2004
+<OPTION VALUE="" onClick = "annee('2005')">2005
+<OPTION VALUE="" onClick = "annee('2006')">2006
+<OPTION VALUE="" onClick = "annee('2007')">2007
+<OPTION VALUE="" onClick = "annee('2008')">2008
+<OPTION VALUE="" onClick = "annee('2009')">2009
+<OPTION VALUE="" onClick = "annee('2010')">2010
 </SELECT>
 </FORM>
     <div id="map"></div>
@@ -139,7 +139,7 @@ var parcourTable = function(tableau){
 								if (objet) {
 										if(objet.value.geo_coordinates){
 												//console.log("Position du film " + objet.value.titre + " : " +  "latitude : " + objet.value.geo_coordinates[0] + " longitude : " + objet.value.geo_coordinates[1]);
-												var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1], titre: objet.value.titre };
+												var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1], titre: objet.value.titre, annee: objet.value.date_debut_evenement };
 												listePositions.push(pos)
 										}
 										objet.continue();
@@ -159,7 +159,7 @@ var parcourTable = function(tableau){
 function initMap() {
 		var map = new google.maps.Map(document.getElementById('map'), {
     		zoom: 12,
-        center: {lat: 48.8604392, lng: 2.2940087}
+        	center: {lat: 48.8604392, lng: 2.2940087}
     });
 		var markers = listePositions.map(function(location, i) {
     		return new google.maps.Marker({
@@ -172,7 +172,30 @@ function initMap() {
     		{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 
 
-}//fin initMap
+}
+//fonction qui réinitialise la map et affiche uniquement les films dont l'année correspond à celle passée en paramètre.
+function annee(n){
+	listePositionsAux = [];
+	for (i in listePositions){
+		if(listePositions[i].annee.substring(0, listePositions[i].annee.indexOf('-')) == n){
+			listePositionsAux.push(listePositions[i]);
+		}
+	}	
+	var map = new google.maps.Map(document.getElementById('map'), {
+    		zoom: 12,
+        	center: {lat: 48.8604392, lng: 2.2940087}
+    });
+		var markers = listePositionsAux.map(function(location, i) {
+    		return new google.maps.Marker({
+            		position: location,
+			title: listePositions[i].titre
+        });
+    });
+        // ajoute un marker clusterer pour regrouper les markers.
+    var markerCluster = new MarkerClusterer(map, markers,
+    		{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+	
+}
 	
     </script>
     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
