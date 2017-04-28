@@ -171,7 +171,7 @@ function initMap() {
     var markerCluster = new MarkerClusterer(map, markers,
     		{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 
-
+	map.data.loadGeoJson('https://raw.githubusercontent.com/nico12450/ProjetTW3/master/arrondissements.geojson');
 }
 //fonction qui réinitialise la map et affiche uniquement les films dont l'année correspond à celle passée en paramètre.
 function annee(n){
