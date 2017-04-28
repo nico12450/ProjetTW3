@@ -14,17 +14,32 @@
         width: 100%;
 
        }
+	#panel{
+	    text-align: center;
+	    background-color: #e5eecc;
+	    border: solid 1px #c3c3c3;
+			display: none;
+	}
     </style>
     <script
   src="https://code.jquery.com/jquery-3.1.1.min.js"
   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
   crossorigin="anonymous"></script>
+
+		<script> 
+$(document).ready(function(){
+    $("button").click(function(){
+        $("#panel").slideToggle("slow");
+    });
+});
+</script>
+
     <title>Google map api</title>
   </head>
   <body>
 	<FORM NAME="Choix">
 <SELECT NAME="Liste">
-<OPTION VALUE="" onClick = "initMap()">Choisir une annee
+<OPTION VALUE="" onClick = "initMap()">2002 a 2010
 <OPTION VALUE="" onClick = "annee('2002')">2002
 <OPTION VALUE="" onClick = "annee('2003')">2003
 <OPTION VALUE="" onClick = "annee('2004')">2004
@@ -36,6 +51,49 @@
 <OPTION VALUE="" onClick = "annee('2010')">2010
 </SELECT>
 </FORM>
+
+<button>formulaire</button><br><br>
+
+<form method="post" action="traitement.php" id="panel">
+   <fieldset>
+       <legend>Informations du film</legend> <!-- Titre du fieldset --> 
+       <label for="titre">Titre</label>
+       <input type="text" name="titre" id="titre" />
+       <label for="nom">Realisateur</label>
+       <input type="text" name="nom" id="realisateur" />
+       <label for="datedeb">date debut</label>
+       <input type="date" name="datedeb" id="date_debut_evenement" />
+			 <label for="datefin">date fin</label>
+       <input type="date" name="datefin" id="date_fin_evenement" />
+			
+   </fieldset>
+   <fieldset>
+       <legend>Localisation du tournage</legend> <!-- Titre du fieldset -->
+       <p>
+           <input type="radio" name="souhait" value="riche" id="cadreE" /> <label for="riche">Exterieur</label>
+           <input type="radio" name="souhait" value="celebre" id="cadreD" /> <label for="celebre">Domaine public</label>        
+       </p>
+       <p>
+           	<label for="lieu">tournage scene</label>
+       			<input type="text" name="lieu" id="lieu" />
+       </p>
+				<p>
+           	<label for="adresse">Adresse</label>
+       			<input type="text" name="adresse" id="addresse" />
+           	<label for="codepostal">Arrondissement</label>
+       			<input type="text" name="codepostal" id="arrondissement" />
+       </p>
+			 <p>
+           	<label for="lieu">Adresse complete</label>
+       			<input type="text" name="adresse" id="adresse_complete" />
+       </p>
+			 <p>
+           	<label for="coordonnees">Coordonnees</label>
+       			<input type="text" name="coordonnees" id="geo_coordinates" />
+       </p>
+   </fieldset>
+</form>
+
     <div id="map"></div>
     <script type="text/javascript">
 	
@@ -170,7 +228,7 @@ function initMap() {
         // ajoute un marker clusterer pour regrouper les markers.
     var markerCluster = new MarkerClusterer(map, markers,
     		{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-
+	//arondissements
 	map.data.loadGeoJson('https://raw.githubusercontent.com/nico12450/ProjetTW3/master/arrondissements.geojson');
 }
 //fonction qui réinitialise la map et affiche uniquement les films dont l'année correspond à celle passée en paramètre.
@@ -181,6 +239,7 @@ function annee(n){
 			listePositionsAux.push(listePositions[i]);
 		}
 	}	
+	//obligé de recopier la fonction car on utilise liste posistionaux
 	var map = new google.maps.Map(document.getElementById('map'), {
     		zoom: 12,
         	center: {lat: 48.8604392, lng: 2.2940087}
@@ -194,7 +253,8 @@ function annee(n){
         // ajoute un marker clusterer pour regrouper les markers.
     var markerCluster = new MarkerClusterer(map, markers,
     		{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-	
+
+		map.data.loadGeoJson('https://raw.githubusercontent.com/nico12450/ProjetTW3/master/arrondissements.geojson');
 }
 	
     </script>
