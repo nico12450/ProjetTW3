@@ -107,6 +107,7 @@ const dbName = "MaBase";
 var idbSupported = false;
 var db;
 var listePositions = [];
+var filmsParArr = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
  
 document.addEventListener("DOMContentLoaded", function(){
 	var tableau;
@@ -200,11 +201,14 @@ var parcourTable = function(tableau){
 												//console.log("Position du film " + objet.value.titre + " : " +  "latitude : " + objet.value.geo_coordinates[0] + " longitude : " + objet.value.geo_coordinates[1]);
 												var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1], titre: objet.value.titre, annee: objet.value.date_debut_evenement };
 												listePositions.push(pos)
+                        if(parseInt(objet.value.arrondissement)-75000>=1 && parseInt(objet.value.arrondissement)-75000<=20){
+                          filmsParArr[parseInt(objet.value.arrondissement)-75001]++;
+                        }
 										}
 										objet.continue();
 								}			
 								else {		
-								initMap();
+								initMap(filmsParArr);
 								}
 						};
         }
@@ -215,7 +219,7 @@ var parcourTable = function(tableau){
     }
 }//fin parcoursTable
 
-function initMap() {
+function initMap(liste) {
 		var map = new google.maps.Map(document.getElementById('map'), {
     		zoom: 12,
         	center: {lat: 48.8604392, lng: 2.2940087}
@@ -232,7 +236,7 @@ function initMap() {
 	//arondissements
 	map.data.loadGeoJson('https://raw.githubusercontent.com/nico12450/ProjetTW3/master/arrondissements.geojson');
 
-  graphe();
+  graphe(liste);
 }
 //fonction qui réinitialise la map et affiche uniquement les films dont l'année correspond à celle passée en paramètre.
 function annee(n){
@@ -271,22 +275,37 @@ function annee(n){
     
     <script>
 
-function graphe(){
+function graphe(l){
 var ctx = document.getElementById("myChart");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        //labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
         datasets: [{
             label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
+            data: l,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
                 'rgba(255, 206, 86, 0.2)',
                 'rgba(75, 192, 192, 0.2)',
                 'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)'
             ],
             borderColor: [
                 'rgba(255,99,132,1)',
@@ -294,7 +313,21 @@ var myChart = new Chart(ctx, {
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
                 'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
+                'rgba(255, 159, 64, 1)',
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
             ],
             borderWidth: 1
         }]
