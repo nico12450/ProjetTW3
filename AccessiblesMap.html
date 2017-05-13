@@ -54,7 +54,7 @@ $(document).ready(function(){
 
 <button>formulaire</button><br><br>
 
-<form method="post" action="traitement.php" id="panel">
+<form action="javascript:ajoutFormulaire();" id="panel">
    <fieldset>
        <legend>Informations du film</legend> <!-- Titre du fieldset --> 
        <label for="titre">Titre</label>
@@ -348,6 +348,36 @@ var myChart = new Chart(ctx, {
         }
     }
 })};
+
+function ajoutFormulaire(){
+
+  var titre = $('#titre').val();
+  var loc = $('#geo_coordinates').val();
+
+  var openRequest = window.indexedDB.open("BaseFilms",3);
+ 
+  openRequest.onsuccess = function(e) {
+
+    db = e.target.result;
+
+    var filmaajouter = [{titre : titre, geo_coordinates : loc}]
+    
+    var objectStore = db.transaction("Films", "readwrite").objectStore("Films");
+
+    objectStore.add(filmaajouter[0]);
+
+    alert("film ajoute avec succes"); 
+
+
+  }
+  openRequest.onerror = function(e) {
+
+    console.log("Erreur");
+    console.dir(e);
+
+  }
+
+}
 </script>
 
   </body>
