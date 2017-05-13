@@ -199,7 +199,7 @@ var parcourTable = function(tableau){
 								if (objet) {
 										if(objet.value.geo_coordinates){
 												//console.log("Position du film " + objet.value.titre + " : " +  "latitude : " + objet.value.geo_coordinates[0] + " longitude : " + objet.value.geo_coordinates[1]);
-												var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1], titre: objet.value.titre, annee: objet.value.date_debut_evenement };
+												var pos = {lat: objet.value.geo_coordinates[0], lng: objet.value.geo_coordinates[1], titre: objet.value.titre, annee: objet.value.date_debut_evenement, arrondissement : objet.value.arrondissement };
 												listePositions.push(pos)
                         if(parseInt(objet.value.arrondissement)-75000>=1 && parseInt(objet.value.arrondissement)-75000<=20){
                           filmsParArr[parseInt(objet.value.arrondissement)-75001]++;
@@ -240,10 +240,14 @@ function initMap(liste) {
 }
 //fonction qui réinitialise la map et affiche uniquement les films dont l'année correspond à celle passée en paramètre.
 function annee(n){
+  filmsParArr = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 	listePositionsAux = [];
 	for (i in listePositions){
 		if(listePositions[i].annee.substring(0, listePositions[i].annee.indexOf('-')) == n){
 			listePositionsAux.push(listePositions[i]);
+      if(parseInt(listePositions[i].arrondissement)-75000>=1 && parseInt(listePositions[i].arrondissement)-75000<=20){
+        filmsParArr[parseInt(listePositions[i].arrondissement)-75001]++;
+      }
 		}
 	}	
 	//obligé de recopier la fonction car on utilise liste posistionaux
@@ -262,6 +266,8 @@ function annee(n){
     		{imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 
 		map.data.loadGeoJson('https://raw.githubusercontent.com/nico12450/ProjetTW3/master/arrondissements.geojson');
+
+    graphe(filmsParArr);
 }
 
     </script>
@@ -283,7 +289,7 @@ var myChart = new Chart(ctx, {
         //labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
         labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
         datasets: [{
-            label: '# of Votes',
+            label: 'nombre de films',
             data: l,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
