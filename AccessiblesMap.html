@@ -87,8 +87,10 @@ $(document).ready(function(){
            	<label for="lieu">Adresse complete</label>
        			<input type="text" name="adresse" id="adresse_complete" />
 
-           	<label for="coordonnees">Coordonnees</label>
-       			<input type="text" name="coordonnees" id="geo_coordinates" />
+           	<label for="longitude">Longitude</label>
+       			<input type="text" name="longitude" id="longitude" />
+            <label for="latitude">Latitude</label>
+            <input type="text" name="latitude" id="latitude" />
        </p>
 				<input type="submit" value="Envoyer" />
    </fieldset>
@@ -349,10 +351,12 @@ var myChart = new Chart(ctx, {
     }
 })};
 
+//fonction permettant l'ajout des données du formulaire dans la base de données
 function ajoutFormulaire(){
 
   var titre = $('#titre').val();
-  var loc = $('#geo_coordinates').val();
+  var lon = $('#longitude').val();
+  var lat = $('#latitude').val();
 
   var openRequest = window.indexedDB.open("BaseFilms",3);
  
@@ -360,7 +364,7 @@ function ajoutFormulaire(){
 
     db = e.target.result;
 
-    var filmaajouter = [{titre : titre, geo_coordinates : loc}]
+    var filmaajouter = [{titre : titre, geo_coordinates : [lon, lat]}]
     
     var objectStore = db.transaction("Films", "readwrite").objectStore("Films");
 
