@@ -357,6 +357,7 @@ function ajoutFormulaire(){
   var titre = $('#titre').val();
   var lon = $('#longitude').val();
   var lat = $('#latitude').val();
+  var arrond = $("#arrondissement").val();
 
   var openRequest = window.indexedDB.open("BaseFilms",3);
  
@@ -364,7 +365,7 @@ function ajoutFormulaire(){
 
     db = e.target.result;
 
-    var filmaajouter = [{titre : titre, geo_coordinates : [lon, lat]}]
+    var filmaajouter = [{titre : titre, geo_coordinates : [lon, lat], arrondissement : arrond}]
     
     var objectStore = db.transaction("Films", "readwrite").objectStore("Films");
 
