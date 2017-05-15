@@ -25,7 +25,8 @@
   src="https://code.jquery.com/jquery-3.1.1.min.js"
   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
   crossorigin="anonymous"></script>
-
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script> 
 $(document).ready(function(){
     $("button").click(function(){
@@ -37,65 +38,123 @@ $(document).ready(function(){
     <title>Google map api</title>
   </head>
   <body>
-    <h1>Tournages de films sur paris de 2002 à 2010</h1>
-	<FORM NAME="Choix">
-<SELECT NAME="Liste">
-<OPTION VALUE="" onClick = "initMap()">2002 a 2010
-<OPTION VALUE="" onClick = "annee('2002')">2002
-<OPTION VALUE="" onClick = "annee('2003')">2003
-<OPTION VALUE="" onClick = "annee('2004')">2004
-<OPTION VALUE="" onClick = "annee('2005')">2005
-<OPTION VALUE="" onClick = "annee('2006')">2006
-<OPTION VALUE="" onClick = "annee('2007')">2007
-<OPTION VALUE="" onClick = "annee('2008')">2008
-<OPTION VALUE="" onClick = "annee('2009')">2009
-<OPTION VALUE="" onClick = "annee('2010')">2010
-</SELECT>
-</FORM>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<h1>Tournages de films sur paris de 2002 à 2010</h1>
+			</div>
+		</div>
+	</div>
 
-<button>formulaire</button><br><br>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+	
+	<div class="btn-group ">
+        <button data-toggle="dropdown" class="btn  btn-default dropdown-toggle" type="button" id="btnGroupVerticalDrop1">
+            Années de tournage <span class="caret"></span>
+        </button>
+        <ul aria-labelledby="btnGroupVerticalDrop1" role="menu" class="dropdown-menu">
+          <li><a href="#" onClick = "initMap()">2002 a 2010</a></li>
+          <li><a href="#" onClick = "annee('2002')">2002</a></li>
+		  <li><a href="#" onClick = "annee('2003')">2003</a></li>
+          <li><a href="#" onClick = "annee('2004')">2004</a></li>
+		  <li><a href="#" onClick = "annee('2005')">2005</a></li>
+          <li><a href="#" onClick = "annee('2006')">2006</a></li>
+		  <li><a href="#" onClick = "annee('2007')">2007</a></li>
+          <li><a href="#" onClick = "annee('2008')">2008</a></li>
+		  <li><a href="#" onClick = "annee('2009')">2009</a></li>
+          <li><a href="#" onClick = "annee('2010')">2010</a></li>
+        </ul>
+	</div>
 
-<form action="javascript:ajoutFormulaire();" id="panel">
-   <fieldset>
-       <legend>Informations du film</legend> <!-- Titre du fieldset --> 
-       <label for="titre">Titre</label>
-       <input type="text" name="titre" id="titre" />
-       <label for="nom">Realisateur</label>
-       <input type="text" name="nom" id="realisateur" />
-       <label for="datedeb">date debut</label>
-       <input type="date" name="datedeb" id="date_debut_evenement" />
-			 <label for="datefin">date fin</label>
-       <input type="date" name="datefin" id="date_fin_evenement" />
-			
-   </fieldset>
-   <fieldset>
-       <legend>Localisation du tournage</legend> <!-- Titre du fieldset -->
-       <p>
-           <input type="radio" name="souhait" value="riche" id="cadreE" /> <label for="riche">Exterieur</label>
-           <input type="radio" name="souhait" value="celebre" id="cadreD" /> <label for="celebre">Domaine public</label>        
-       </p>
-       <p>
-           	<label for="lieu">tournage scene</label>
-       			<input type="text" name="lieu" id="lieu" />
-       </p>
-				<p>
-           	<label for="adresse">Adresse</label>
-       			<input type="text" name="adresse" id="addresse" />
-           	<label for="codepostal">Arrondissement</label>
-       			<input type="text" name="codepostal" id="arrondissement" />
-       </p>
-			 <p>
-           	<label for="lieu">Adresse complete</label>
-       			<input type="text" name="adresse" id="adresse_complete" />
+				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+					<div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="headingOne">
+							<h4 class="panel-title">
+								<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+									<span class="glyphicon glyphicon-film" aria-hidden="true"></span> Ajouter un film
+								</a>
+							</h4>
+						</div>
 
-           	<label for="longitude">Longitude</label>
-       			<input type="text" name="longitude" id="longitude" />
-            <label for="latitude">Latitude</label>
-            <input type="text" name="latitude" id="latitude" />
-       </p>
-				<input type="submit" value="Envoyer" />
-   </fieldset>
-</form>
+						<div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+							<div class="panel-body">
+
+								<form id="formAjout" role="form" class="from-horizontal">
+									<div class="form-group">
+										<label for="Titre" class="col-xs-1 control-label">Titre</label>
+										<div class="col-xs-5 control-label">
+											<input id="titre" type="text" placeholder="Le titre du film" class="form-control" required><br/>
+										</div>
+										<label for="dep" class="col-xs-1 control-label" >Realisateur</label>
+										<div class="col-xs-5 control-label">
+											<input id="realisateur" type="text" min="0" class="form-control" placeholder="Nom de famille" ><br/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="date" class="col-xs-1 control-label">Date debut</label>
+										<div class="col-xs-5 control-label">
+											<input id="date" type="date" class="form-control" placeholder="Date du film" ><br/>
+										</div>
+										<label for="heure" class="col-xs-1 control-label">Date fin</label>
+										<div class="col-xs-5 control-label">
+											<input id="heure" type="time" class="form-control" placeholder="Date du film" ><br/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="lieu" class="col-xs-1 control-label">Lieu</label>
+										<div class="col-xs-5 control-label">
+											<input type="radio" name="souhait" value="riche" id="cadreE" /> <label for="riche">Exterieur</label>
+											<input type="radio" name="souhait" value="celebre" id="cadreD" /> <label for="celebre">Domaine public</label>
+										</div>
+										<label for="lieu" class="col-xs-1 control-label">Lieu tournage</label>
+										<div class="col-xs-5 control-label">
+											<input id="lieu" type="text" min="0" class="form-control" placeholder="lieu du tournage" ><br/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="code postal" class="col-xs-2 control-label">Arrondissement</label>
+										<div class="col-xs-2 control-label">
+											<input id="arrondissement" type="number" class="form-control" placeholder="Code postal" required><br/>
+										</div>
+										<label for="heure" class="col-xs-1 control-label">Longitude</label>
+										<div class="col-xs-3 control-label">
+											<input id="longitude" type="number" class="form-control" required><br/>
+										</div>
+										<label for="heure" class="col-xs-1 control-label">Latitude</label>
+										<div class="col-xs-3 control-label">
+											<input id="latitude" type="number" class="form-control" required><br/>
+										</div>
+									</div>
+									
+									<div class="form-group">
+										<label for="Adresse" class="col-xs-1 control-label">Adresse</label>
+										<div class="col-xs-5 control-label">
+											<input id="adresse" type="text"  class="form-control" ><br/>
+										</div>
+										<label for="dep" class="col-xs-1 control-label" >Adresse complete</label>
+										<div class="col-xs-5 control-label">
+											<input id="adresse_complete" type="text" class="form-control"  ><br/>
+										</div>
+									</div>
+
+									<div class="form-group">
+										<div class="col-xs-offset-5 col-xs-5">
+											<button type="submit" class="btn btn-primary" value="Envoyer >Ajouter</button>&nbsp;<a id="aide" href="aide.html">Aide</a>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
     <div id="map"></div>
     <canvas id="myChart" width="400" height="400"></canvas>
